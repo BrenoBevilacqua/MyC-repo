@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <net/if.h>
+
+int main(){
+  int len = sizeof(struct sockaddr_in);
+  int sockfd, io, bnd, con, sent;
+  char buf[] = "What is up my friend?";
+  if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0){
+    puts("Socket error");
+  }
+  
+  struct ifreq req;
+  strcpy(req.ifr_name, "lo");
+  if((io = ioctl(sockfd, SIOCGIFINDEX, &req)) < 0){
+    puts("Interface probe error");
+    exit(1);
+  }
+  //  printf("%d\n", req.ifr_ifindex);
+  struct sockaddr_in addr;
+  addr.sin_family = AF_INET;
+  addr.sin_port = htons(6969);
+  inet_pton(AF_INET, "127.0.0.1", &addr.sin_addr);
+  if((bnd = bind(sockfd, (struct sockaddr *)&addr, len) < 0)){
+      puts("Binding error");
+      exit(1);
+  }
+  puts("Interface binded!");
+
+  puts("Listening....");
+  while((listen(sockfd, 1)) >= 0){
+    if((con = accept(sockfd, (struct sockaddr *)&addr, &len)) != 1){
+      puts("Connection established!");
+    }
+    else{
+      puts("Connection error! ");
+    }
+    while(con){
+      if((sent = send(con, buf, strlen(buf), 0)) < 0){
+	puts("Failure in sending message!");
+	exit(1);
+      }
+      printf("%d", sent);
+      puts("In connection!");
+      con = accept(sockfd, (struct sockaddr *)&addr, &len);
+    }
+  }
+  
+  close(con);
+  close(sockfd);
+  exit(0);
+}
+
