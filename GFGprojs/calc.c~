@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int calc(char arguments);
+  
+int main(int argc, char argv[]){
+  puts("Simple calculator");
+  calc(argv);
+}
+
+int calc(char arguments){
+  int i;
+  for(i=0; i < arguments; i++){
+    printf("%s", arguments[i]);
+  }
+  return 0;
+}
