@@ -102,11 +102,17 @@ int delete(node* list, int index){
   }
   if(!index){
     printf("hi");
-    free(list->val);
-    
+    //    free(list->val);
+    void* temp = &list->val;
+    printf("%p\n", &list->val);
+    printf("%p\n", temp);
+    // frees up pointer to node's value
     node *ptr = list->next;
+    // temporarily stores the next node
     //  list->val = ptr->val;
     list->next = ptr->next;
+    // switches the values so the first list node remains intact, delete only
+    // the next node
     //printf("%d", *(int*)list->val);
     free(ptr);
     return 0;
