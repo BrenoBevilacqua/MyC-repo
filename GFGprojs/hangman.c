@@ -1,61 +1,65 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
-#define MAXLINE 10
-#define OUT 1
-#define IN 0
+int check(char word[], char guess);
+void hangman();
 
 int main(){
-  char wordlist[30][10] = {"zebra", "car", "cat", "box", "computer", "machine", "lion", "tower", "road", "ball", "woman", "sun", "shop"};
-  char word[MAXLINE];
-  int guesses = MAXLINE + 5;
-  int state = OUT;
-  char choice;
-
-  while(state){
-    printf("Word guessing game");
-    strcpy(word, wordlist[rand()%13]);
-    printf("%s\n", word);
-    printf("Will you try guessing the entire word or a letter?");
-    printf("\n");
-    while(guesses){
-      while(state){
-	if((choice = getchar()) == 'w' || choice == 'l'){
-	  state = IN;
-	}else{
-	  printf("\nInsert a valid character\n");
-	  state = IN;
+  int tries, corrects;
+  int wins=0;
+  char static const words[20][10] = {"zebra", "ball", "computer", "mouse", "tower", "car"};
+  char word[10];
+  char guess;
+  
+  printf("Hangman game\n");
+  while(true){
+    printf("\nWin count: %d\n", wins);
+    strcpy(word, words[1]);
+    tries  = strlen(word) * 1.5;
+    corrects = 0;
+    while(tries){
+      hangman();
+      printf("Tries: %d\n", tries);
+      if((guess = getchar()) == '0'){
+	printf("Insert a valid character!");
+	continue;
+      }
+      fflush(stdin);
+      if(check(word, guess)){
+	printf("Letter guessed\n");
+	corrects++;
+      }
+      if(corrects >= strlen(word)){
+	  printf("You've guessed the word '%s'\n", word);
+	  wins++;
 	  break;
-	}	
       }
-      if(choice == 'w'){
-	getword(word);
-	printf("%s", word);
-      }
-      printf("%c", choice);
-      printf("hey");
-      guesses = 0;
-
+      tries--;
+      if(!tries){
+	printf("\nYou lost, the word was: '%s'\n", words[1]);
       }
     }
-  }
-
-  int getword(char line[]){
-    int i;
-    for(i=0; i < MAXLINE && scanf("%c", &line[i]) == 1 && line[i] >= 0; i++);
       
-    
   }
+}
 
-
-
-
-
-
-
-
-
-
-
-
+void hangman(){
+  char hangman[9][10] = {
+    "   _____\n","   |\t|\n","   O\t|\n","  /|","\\\t|\n","   |\t|\n","  /"," \\\t|\n", "________|" };
+  for(int i=0; i <9; i++){
+    printf("%s", hangman[i]);
+  }
+  printf("\n");
+}
+int check(char word[], char guess){
+  int i;
+  int state = 0;
+  for(i=0; i < strlen(word); i++){
+    if(word[i] == guess){
+      word[i] = '0';
+      state = 1;
+    }
+  }
+  return state;
+}

@@ -11,8 +11,9 @@ node* list(int elements[], int max);
 node* create(int* value, node* prev);
 void printlist(node* list);
 void insert(node* list, int index, int value);
-int delete(node* list, int index);
-  
+void* delete(node* list, int index);
+
+void* search(node* list, int val);
 int main(){
 
   int elements[] = {10,20,30,40,50,60,70,80,90,100};
@@ -23,18 +24,25 @@ int main(){
   insert(mylist,9,300);
   printlist(mylist);
 
-  delete(mylist, 0);
+  void* ptr = delete(mylist, 0);
+  printf("%d", *(int*)ptr);
   printlist(mylist);
-  //delete(mylist,0);
-  /*for(int i=0; i < 5;i++){
-    delete(mylist, 5);
-  }*/
-  //printlist(mylist);
-  //  free(mylist);
+  
+  free(ptr);
+  
+  
   
   return 0;
 
   
+}
+
+void* search(node* list, int val){
+  for(int i=0; i < val-1; i++){
+    list = list->next;
+  }
+  void* ptr = list->val;
+  return ptr;
 }
 
 
@@ -94,28 +102,23 @@ void insert(node* list, int index, int value){
   
 }
 
-int delete(node* list, int index){
+void* delete(node* list, int index){
   int i;
   if(!list->next){
     printf("Cannot delete more elements!\n");
-    return 1;
+    //    return 1;
   }
   if(!index){
-    printf("hi");
-    //    free(list->val);
-    void* temp = &list->val;
-    printf("%p\n", &list->val);
-    printf("%p\n", temp);
-    // frees up pointer to node's value
+    void* temp = list->val;
+    
     node *ptr = list->next;
-    // temporarily stores the next node
-    //  list->val = ptr->val;
     list->next = ptr->next;
-    // switches the values so the first list node remains intact, delete only
-    // the next node
-    //printf("%d", *(int*)list->val);
+    list->val = ptr->val;
     free(ptr);
-    return 0;
+    //    printf("| %d and", *(int*)temp);
+    //    printf("%d |", *(int*)list->val);
+    return temp;
+      //return 0;
   }
 
   for(i=0; i < index -2; i++){
@@ -124,13 +127,13 @@ int delete(node* list, int index){
   if(list->next){
     
     node *ptr = list->next;
-    
+    void* temp = ptr->val;
     list->next = ptr->next;
-    free(ptr->val);
     free(ptr);
-    return 0;
+    free(temp);
+    //    return 0;
   }
-  return 1;
+  //  return 1;
   
 }
 
