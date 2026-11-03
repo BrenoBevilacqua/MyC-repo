@@ -1,0 +1,44 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <string.h>
+
+
+
+struct sockaddr_in pla;
+struct sockaddr_in client;
+
+
+int main(){
+  socklen_t len = sizeof(struct sockaddr);
+  int sockfd, bn, cfd;
+
+  if(!(sockfd = socket(AF_INET, SOCK_STREAM, 0))){
+    puts("Socket error");
+    exit(1);
+  }
+
+  pla.sin_family = AF_INET;
+  pla.sin_port = htons(13);
+  inet_pton(AF_INET, "127.0.0.1", &pla.sin_addr);
+
+  if(!(bn = bind(sockfd, (struct sockaddr *)&pla, len))){
+    puts("Binding error");
+    exit(1);
+  }
+
+  listen(sockfd, 1);
+  puts("waiting");
+
+  for( ; ; ){
+    
+    cfd = accept(sockfd, (struct sockaddr *)NULL, NULL);
+    puts("Connection established!");
+
+
+  }
+  
+
+}

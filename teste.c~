@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <malloc.h>
+
+struct Node{
+  void* val;
+  node* next;
+}node;
+
+int main(){
+  int a = 3;
+  char b = 'b';
+  void* elements[] = {0};
+
+  printf("%d %d", sizeof(a), sizeof(b));
+  
+}

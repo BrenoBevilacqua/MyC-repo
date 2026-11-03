@@ -2,64 +2,61 @@
 #include <stdlib.h>
 #include <string.h>
 
-int check(char word[], char guess);
-void hangman();
+bool check(char guess, char word[], char hold[]);
 
 int main(){
-  int tries, corrects;
-  int wins=0;
-  char static const words[20][10] = {"zebra", "ball", "computer", "mouse", "tower", "car"};
-  char word[10];
+  int guesses, ct=0;
   char guess;
-  
-  printf("Hangman game\n");
+  char words[10][10] = {"ball", "cat", "rain", "rock", "tower"};
+  char word[10];
+  char hold[10];
+
+  printf("Hangman game\n\n");
   while(true){
-    printf("\nWin count: %d\n", wins);
-    strcpy(word, words[1]);
-    tries  = strlen(word) * 1.5;
-    corrects = 0;
-    while(tries){
-      hangman();
-      printf("Tries: %d\n", tries);
-      if((guess = getchar()) == '0'){
-	printf("Insert a valid character!");
+    guesses = 10;
+    strcpy(hold, "_________");
+    strcpy(word, words[ct]);
+    hold[strlen(word)] = '\0';
+    printf("New word size: %ld\n\n", strlen(word));
+    ct++;
+    while(guesses){
+      guess = getchar();
+      fflush(stdin);
+
+      if(guess < 'a' || guess > 'z'){
+	//	puts("Insert a valid character!");
 	continue;
       }
-      fflush(stdin);
-      if(check(word, guess)){
-	printf("Letter guessed\n");
-	corrects++;
+
+      if( (check(guess, word, hold)) ){
+	puts("You've guessed it");
+      }else{
+	puts("Incorrect!");
+	guesses--;
       }
-      if(corrects >= strlen(word)){
-	  printf("You've guessed the word '%s'\n", word);
-	  wins++;
-	  break;
+
+      if( !(check('_', hold, hold)) ){
+	printf("\nYou've guessed the word: %s\n", hold);
+	break;
       }
-      tries--;
-      if(!tries){
-	printf("\nYou lost, the word was: '%s'\n", words[1]);
-      }
+      printf("%s\n", hold);
+     
     }
-      
   }
+  
+  
 }
 
-void hangman(){
-  char hangman[9][10] = {
-    "   _____\n","   |\t|\n","   O\t|\n","  /|","\\\t|\n","   |\t|\n","  /"," \\\t|\n", "________|" };
-  for(int i=0; i <9; i++){
-    printf("%s", hangman[i]);
-  }
-  printf("\n");
-}
-int check(char word[], char guess){
+bool check(char guess, char word[], char hold[]){
   int i;
-  int state = 0;
+  int state = false;
+  
   for(i=0; i < strlen(word); i++){
-    if(word[i] == guess){
-      word[i] = '0';
-      state = 1;
-    }
+    if(guess == word[i]){
+      hold[i] = word[i];
+      word[i] = '_';
+      state = true;
+    }		     
   }
   return state;
 }
