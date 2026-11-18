@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <malloc.h>
+
+typedef struct Node{
+  int key;
+  struct Node* next;
+}node;
+
+int main(){
+  int i, N = 9, M = 5;
+
+  struct node *t, *x;
+  t = (node *) malloc(sizeof node);
+  t->ket = 1; x = t;
+  for(i = 2; i <= N; i++){
+    t->next = (node*) malloc(sizeof(node));
+    t = t->next;
+    t->ket = i;
+  }
+  t->next = x;
+  while(t != t->next){
+    for (i = 1; i < M; i++) t = t->next;
+    printf("%d ", t->next->key);
+    x = t->next;
+    t->next = t->next->next;
+    free(x)
+  }
+  printf(" |%d|\n, t->key");
+    
+}

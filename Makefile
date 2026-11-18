@@ -1,6 +1,6 @@
 
 server: server.c
 	gcc -Wall server.c server
-list: mytypesslist.c
-	gcc -Wall mytypesslist.c -o mytypesslist
+list: genList.c
+	gcc -Wall genList.c -o list
 
